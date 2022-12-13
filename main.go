@@ -14,6 +14,7 @@ func main() {
 		sum map[string]int
 		domains []string
 		total int
+		lines int
 	) 
 
 	sum = make(map[string]int)
@@ -25,14 +26,14 @@ func main() {
 	for in.Scan() {
 		fields := strings.Fields(in.Text())
 		if len(fields) != 2 {
-			fmt.Printf("wrong input: %v\n", fields)
+			fmt.Printf("wrong input:  %v (%d)\n", fields, lines)
 			return
 		}
 
 		domain := fields[0]
 
 		visits, err := strconv.Atoi(fields[1])
-		if err != nil {
+		if visits < 0 || err != nil {
 			fmt.Printf("wrong input: %v\n", fields[1])
 			return
 		}
@@ -54,4 +55,8 @@ func main() {
 		fmt.Printf("%-30s %10d\n", domain, visits)
 	}
 	fmt.Printf("%-30s %10d\n", "TOTAL", total)
+
+	if err := in.Err(); err != nil{
+		fmt.Println("> Err:", err)
+	}
 }
