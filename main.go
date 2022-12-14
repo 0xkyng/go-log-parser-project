@@ -9,8 +9,13 @@ import (
 	"strings"
 )
 
+type result struct {
+	domain string
+	visits int
+}
+
 type parser struct {
-	sum map[string]int // total visits per domains
+	sum map[string]result // total visits per domains
 	domains []string //unique domain names
 	total int       // total visit to all domains
 	lines int      // number of parsed files
@@ -19,7 +24,7 @@ type parser struct {
 func main() {
 	
 	p := parser {
-		sum : make(map[string]int),
+		sum : make(map[string]result),
 	}
 
 	// crete a new scanner that uses standard input
@@ -44,21 +49,28 @@ func main() {
 			return
 		}
 
+		// Collect the unique domains
 		if _, ok := p.sum[domain]; !ok {
 			p.domains = append(p.domains, domain)
 		}
 
+		// Keep track of total and per domain visits
 		p.total += visits
-		p.sum[domain] += visits
+		p.sum[domain] = result{
+			domain: domain,
+			visits: visits + p.sum[domain].visits,
+		}
 	}
+
+	// Print the visits
+	sort.Strings(p.domains)
 
 	fmt.Printf("%-30s %10s\n", "DOMAIN", "VISITS")
 	fmt.Printf(strings.Repeat("-", 45))
 
-	sort.Strings(p.domains)
 	for _, domain := range p.domains {
-		visits := p.sum[domain]
-		fmt.Printf("%-30s %10d\n", domain, visits)
+		parsed := p.sum[domain]
+		fmt.Printf("%-30s %10d\n", domain, parsed.visits)
 	}
 	fmt.Printf("%-30s %10d\n", "TOTAL", p.total)
 
