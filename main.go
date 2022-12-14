@@ -11,15 +11,12 @@ import (
 
 type parser struct {
 	sum map[string]int // total visits per domains
-
+	domains []string //unique domain names
+	total int       // total visit to all domains
+	lines int      // number of parsed files
 }
 
 func main() {
-	var (
-		domains []string //unique domain names
-		total int       // total visit to all domains
-		lines int      // number of parsed files
-	)
 	
 	p := parser {
 		sum : make(map[string]int),
@@ -30,12 +27,12 @@ func main() {
 
 	// scan the log file line by line by calling the scan method
 	for in.Scan() {
-		lines++
+		p.lines++
 
 		// parse the files
 		fields := strings.Fields(in.Text())
 		if len(fields) != 2 {
-			fmt.Printf("wrong input:  %v (%d)\n", fields, lines)
+			fmt.Printf("wrong input:  %v (%d)\n", fields, p.lines)
 			return
 		}
 
@@ -48,22 +45,22 @@ func main() {
 		}
 
 		if _, ok := p.sum[domain]; !ok {
-			domains = append(domains, domain)
+			p.domains = append(p.domains, domain)
 		}
 
-		total += visits
+		p.total += visits
 		p.sum[domain] += visits
 	}
 
 	fmt.Printf("%-30s %10s\n", "DOMAIN", "VISITS")
 	fmt.Printf(strings.Repeat("-", 45))
 
-	sort.Strings(domains)
-	for _, domain := range domains {
+	sort.Strings(p.domains)
+	for _, domain := range p.domains {
 		visits := p.sum[domain]
 		fmt.Printf("%-30s %10d\n", domain, visits)
 	}
-	fmt.Printf("%-30s %10d\n", "TOTAL", total)
+	fmt.Printf("%-30s %10d\n", "TOTAL", p.total)
 
 	if err := in.Err(); err != nil{
 		fmt.Println("> Err:", err)
