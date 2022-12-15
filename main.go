@@ -17,20 +17,21 @@ func main() {
 	// scan the log file line by line by calling the scan method
 	for in.Scan() {
 
-		parsed, err := parse(&p, in.Text())
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-
+		parsed := parse(&p, in.Text())
 		update(&p, parsed)
 
 	}
 	summarize(p)
+	dumpErrs([]error{in.Err(), err(p)})
+}
 
+func dumpErrs(errs []error) {
 	// Let's handle the error
-	if err := in.Err(); err != nil {
-		fmt.Println("> Err:", err)
+	// lerr means last error
+	for _, err := range errs {
+		if err != nil {
+			fmt.Println("> Err:", err)
+		}
 	}
 }
 
