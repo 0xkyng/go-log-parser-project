@@ -10,15 +10,15 @@ import (
 
 func main() {
 
-	p := NewParser()
+	p := newParser()
 	// crete a new scanner that uses standard input
 	in := bufio.NewScanner(os.Stdin)
 
 	// scan the log file line by line by calling the scan method
 	for in.Scan() {
 
-		parsed := parse(&p, in.Text())
-		update(&p, parsed)
+		parsed := parse(p, in.Text())
+		update(p, parsed)
 
 	}
 	summarize(p)
@@ -35,7 +35,7 @@ func dumpErrs(errs []error) {
 	}
 }
 
-func summarize(p parser) {
+func summarize(p *parser) {
 
 	// Print the visits
 	sort.Strings(p.domains)

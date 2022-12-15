@@ -6,11 +6,14 @@ import (
 	"strings"
 )
 
+// result stores the parsed value for a domain
 type result struct {
 	domain string
 	visits int
 }
 
+
+// parser keeps track of the pasing
 type parser struct {
 	sum     map[string]result // total visits per domains
 	domains []string          //unique domain names
@@ -19,10 +22,13 @@ type parser struct {
 	lerr    error
 }
 
-func NewParser() parser {
-	return parser{sum: make(map[string]result)}
+// newParser constructs, initializes and returns a new parser
+func newParser() *parser {
+	return &parser{sum: make(map[string]result)}
 }
 
+
+// parse parses a log line and returns the parsed result with an error
 func parse(p *parser, line string) (parsed result) {
 	if p.lerr != nil {
 		return
@@ -50,6 +56,7 @@ func parse(p *parser, line string) (parsed result) {
 	return
 }
 
+// update updates the parser for the given parsing result 
 func update(p *parser, parsed result) {
 	if p.lerr != nil {
 		return
@@ -70,6 +77,6 @@ func update(p *parser, parsed result) {
 	}
 }
 
-func err (p parser) error {
+func err (p *parser) error {
 	return p.lerr
 }
