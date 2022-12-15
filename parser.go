@@ -22,7 +22,8 @@ func NewParser() parser {
 	return parser{sum: make(map[string]result)}
 }
 
-func parse(p parser, line string) (parsed result, err error) {
+func parse(p *parser, line string) (parsed result, err error) {
+	p.lines++
 
 	// parse the files
 	fields := strings.Fields(line)
@@ -43,7 +44,7 @@ func parse(p parser, line string) (parsed result, err error) {
 	return
 }
 
-func update(p parser, parsed result) {
+func update(p *parser, parsed result) {
 	domain, visits := parsed.domain, parsed.visits
 
 	// Collect the unique domains
@@ -57,4 +58,6 @@ func update(p parser, parsed result) {
 		domain: domain,
 		visits: visits + p.sum[domain].visits,
 	}
+	
+
 }

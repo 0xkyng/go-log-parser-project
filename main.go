@@ -7,27 +7,34 @@ import (
 	"sort"
 	"strings"
 )
+
 func main() {
-	
+
 	p := NewParser()
 	// crete a new scanner that uses standard input
 	in := bufio.NewScanner(os.Stdin)
 
 	// scan the log file line by line by calling the scan method
 	for in.Scan() {
-		p.lines++
 
-		parsed, err := parse(p, in.Text())
+		parsed, err := parse(&p, in.Text())
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 
-		update(p, parsed)
-		
+		update(&p, parsed)
 
-		
 	}
+	summarize(p)
+
+	// Let's handle the error
+	if err := in.Err(); err != nil {
+		fmt.Println("> Err:", err)
+	}
+}
+
+func summarize(p parser) {
 
 	// Print the visits
 	sort.Strings(p.domains)
@@ -40,8 +47,4 @@ func main() {
 		fmt.Printf("%-30s %10d\n", domain, parsed.visits)
 	}
 	fmt.Printf("%-30s %10d\n", "TOTAL", p.total)
-
-	if err := in.Err(); err != nil{
-		fmt.Println("> Err:", err)
-	}
 }
