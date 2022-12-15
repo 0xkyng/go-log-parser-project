@@ -23,19 +23,10 @@ func main() {
 			return
 		}
 
-		domain, visits := parsed.domain, parsed.visits
+		update(p, parsed)
+		
 
-		// Collect the unique domains
-		if _, ok := p.sum[domain]; !ok {
-			p.domains = append(p.domains, domain)
-		}
-
-		// Keep track of total and per domain visits
-		p.total += visits
-		p.sum[domain] = result{
-			domain: domain,
-			visits: visits + p.sum[domain].visits,
-		}
+		
 	}
 
 	// Print the visits
